@@ -42,7 +42,7 @@ void setup() {
     epd.Displaypart(IMAGE_DATA,250, 200,240,103);
 
     Serial.print("e-Paper Clear\r\n ");
-    //epd.Clear();
+    epd.Clear();
 
     epd.Sleep();
 }
