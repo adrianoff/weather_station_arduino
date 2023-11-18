@@ -9,7 +9,8 @@
   this example is in the public domain
  */
 #include <ArduinoHttpClient.h>
-#include <WiFi101.h>
+#include <SPI.h>
+#include <WiFiNINA.h>
 
 
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
@@ -17,7 +18,7 @@
 char ssid[] = "adrianov_wifi";
 char pass[] = "31415926";
 
-char serverAddress[] = "adrianov.pro";  // server address
+char serverAddress[] = "google.com";  // server address
 int port = 80;
 
 WiFiClient wifi;
