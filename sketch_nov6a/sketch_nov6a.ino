@@ -18,8 +18,8 @@
 char ssid[] = "adrianov_wifi";
 char pass[] = "31415926";
 
-char serverAddress[] = "google.com";  // server address
-int port = 80;
+char serverAddress[] = "adrianov.pro";  // server address
+int port = 3333;
 
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, serverAddress, port);
@@ -47,16 +47,48 @@ void setup() {
 
 void loop() {
   Serial.println("making GET request");
-  client.get("/");
+  client.get("/test");
 
   // read the status code and body of the response
   int statusCode = client.responseStatusCode();
-  String response = client.responseBody();
+  client.skipResponseHeaders();
+
+  // Serial.println("---");
+  // Serial.print((int)strtol("0x0F", NULL, 16));
+  // Serial.println("---");
+
+  while (true) {
+
+    //switch 
+
+    // int num = (int)strtol(0xFF, NULL, 16);
+    // Serial.println(num);
+
+    int c1 = client.read();
+    int c2 = client.read();
+    if (c1 == -1 || c2 == -1) {
+      break;
+    }
+
+    char str[] = "0x00";
+    str[2] = (char)c1;
+    str[3] = (char)c2;
+
+    Serial.println(str);
+    Serial.println((int)strtol(str, NULL, 16));
+    //Serial.println((char)c1);
+    delay(1000);
+  }
+
+  //String response = client.responseBody();
+
 
   Serial.print("Status code: ");
   Serial.println(statusCode);
-  Serial.print("Response: ");
-  Serial.println(response);
+  Serial.print("Content length: ");
+  Serial.println(client.contentLength());
+  //Serial.print("Response: ");
+  // Serial.println(response);
   Serial.println("Wait five seconds");
-  delay(5000);
+  delay(10000);
 }
