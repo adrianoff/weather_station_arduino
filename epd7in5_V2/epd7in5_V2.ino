@@ -145,6 +145,7 @@ void loop() {
     // }
     //Serial.println(arr);
 
+
     //epd.Sleep();
     delay(10000);
 }
