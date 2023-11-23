@@ -61,13 +61,13 @@ void setup() {
 
 
 void loop() {  
-    Epd epd;
-    Serial.println("e-Paper init...");
-    if (epd.Init() != 0) {
-        Serial.println("e-Paper init failed.");
-        delay(10000);
-        return;
-    }
+    // Epd epd;
+    // Serial.println("e-Paper init...");
+    // if (epd.Init() != 0) {
+    //     Serial.println("e-Paper init failed.");
+    //     delay(10000);
+    //     return;
+    // }
 
     client.get("/test");
     int statusCode = client.responseStatusCode();
@@ -100,31 +100,52 @@ void loop() {
     //   }
     // }
 
-    epd.SendCommand(0x13);
-    for(unsigned long i=0; i<48000; i++)	{
-        if (i < 50) {
-          c1 = client.read();
-          c2 = client.read();
+    // epd.SendCommand(0x13);
+    // for(unsigned long i=0; i<48000; i++)	{
+    //     if (i < 50) {
+    //       c1 = client.read();
+    //       c2 = client.read();
 
-          char str[] = "0x00";
-          str[2] = (char)c1;
-          str[3] = (char)c2;
+    //       char str[] = "0x00";
+    //       str[2] = (char)c1;
+    //       str[3] = (char)c2;
 
-          Serial.print(str); Serial.print(" "); Serial.print(i); Serial.print("\n");
-          int p = (int)strtol(str, NULL, 16);
-          epd.SendData(p);
-        } else {
-          epd.SendData(0x00);
-        }
-    }
-    epd.SendCommand(0x12);
-    delay(100);
-    epd.WaitUntilIdle();
+    //       Serial.print(str); Serial.print(" "); Serial.print(i); Serial.print("\n");
+    //       int p = (int)strtol(str, NULL, 16);
+    //       epd.SendData(p);
+    //     } else {
+    //       epd.SendData(0x00);
+    //     }
+    // }
+    // epd.SendCommand(0x12);
+    // delay(100);
+    // epd.WaitUntilIdle();
 
-    delay(5000);
-    epd.Clear();
+    // delay(5000);
+    // epd.Clear();
 
-    epd.Sleep();
-    delay(20000);
+    // int ret;
+
+    // for (i=0; i<100; i++) {
+    //   ret = client.read();
+    //   Serial.print((char)ret);  
+    // }
+
+    String ret = client.responseBody();
+    Serial.println(ret);
+
+    // Serial.println(ret);
+    // Serial.println(ret2);
+    // Serial.println(client.contentLength());
+    // for (i=0; i<ret; i++) {
+    //   Serial.print((char)arr[i]);  
+    // }
+    // for (i=0; i<ret2; i++) {
+    //   //Serial.print((char)arr2[i]);  
+    // }
+    //Serial.println(arr);
+
+    //epd.Sleep();
+    delay(10000);
 }
 
