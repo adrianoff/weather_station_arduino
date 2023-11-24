@@ -73,8 +73,7 @@ void loop() {
     delay(100);
     epd.WaitUntilIdle();
 
-    delay(5000);
-    epd.Clear();
+    epd.Sleep();
 
     delay(10000);
 }
