@@ -42,6 +42,8 @@ void loop() {
         return;
     }
 
+    epd.Clear();
+
     unsigned long offset = 0;
     unsigned long limit = 1000;
     char url_string[256];
