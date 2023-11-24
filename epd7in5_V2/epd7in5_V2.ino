@@ -1,31 +1,3 @@
-/**
- *  @filename   :   epd7in5-demo.ino
- *  @brief      :   7.5inch e-paper display demo
- *  @author     :   Yehui from Waveshare
- *
- *  Copyright (C) Waveshare     July 10 2017
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documnetation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to  whom the Software is
- * furished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-
-
 #include <WiFiNINA.h>
 #include <ArduinoHttpClient.h>
 #include <SPI.h>
@@ -34,7 +6,7 @@
 
 char ssid[] = "adrianov_wifi";
 char pass[] = "31415926";
-char serverAddress[] = "adrianov.pro";  // server address
+char serverAddress[] = "adrianov.pro";
 int port = 3333;
 
 WiFiClient wifi;
@@ -43,7 +15,7 @@ int status = WL_IDLE_STATUS;
 
 void setup() {
   Serial.begin(9600);
-  while ( status != WL_CONNECTED) {
+  while (status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);
 
@@ -61,92 +33,47 @@ void setup() {
 
 
 void loop() {  
-    // Epd epd;
-    // Serial.println("e-Paper init...");
-    // if (epd.Init() != 0) {
-    //     Serial.println("e-Paper init failed.");
-    //     delay(10000);
-    //     return;
-    // }
+    Epd epd;
+    
+    Serial.println("e-Paper init...");
+    if (epd.Init() != 0) {
+        Serial.println("e-Paper init failed.");
+        delay(1000);
+        return;
+    }
 
-    client.get("/test");
-    int statusCode = client.responseStatusCode();
-    client.skipResponseHeaders();
+    unsigned long offset = 0;
+    unsigned int limit = 1000;
+    char url_string[256];
+    String resp;
+    char base_str[] = "0x00";
 
-    long int i = 0;
-    int c1, c2 = -1;
-    // epd.SendCommand(0x13);
-    // while (true) {
-    //   i++;
-    //   c1, c2 = -1;
+    epd.SendCommand(0x13);
+    for(unsigned int i=0; i<96; i++) {
+      offset = i*limit;
 
-    //   if (i < 100) {
-    //     c1 = client.read();
-    //     c2 = client.read();
-    //     Serial.println(i);
-    //   }
+      sprintf(url_string, "/test?offset=%lu&limit=%d", offset, limit);
+      
+      client.get(url_string);
+      int statusCode = client.responseStatusCode();
+      client.skipResponseHeaders();
 
-    //   if (c1 == -1 || c2 == -1 || i > 48000) {
-    //     epd.SendData(0x00);
-    //     //Serial.print("0x00"); Serial.print(" "); Serial.print(i); Serial.print("\n");
-    //   } else {
-    //     char str[] = "0x00";
-    //     str[2] = (char)c1;
-    //     str[3] = (char)c2;
+      resp = client.responseBody();
+      Serial.print(".");
+      for (int k=0; k<limit; k=k+2) {
+        base_str[2] = resp[k];
+        base_str[3] = resp[k+1];
+        int p = (int)strtol(base_str, NULL, 16);
+        epd.SendData(p);
+      }
+    }
+    epd.SendCommand(0x12);
+    delay(100);
+    epd.WaitUntilIdle();
 
-    //     Serial.print(str); Serial.print(" "); Serial.print(i); Serial.print("\n");
-    //     int p = (int)strtol(str, NULL, 16);
-    //     epd.SendData(p);
-    //   }
-    // }
+    delay(5000);
+    epd.Clear();
 
-    // epd.SendCommand(0x13);
-    // for(unsigned long i=0; i<48000; i++)	{
-    //     if (i < 50) {
-    //       c1 = client.read();
-    //       c2 = client.read();
-
-    //       char str[] = "0x00";
-    //       str[2] = (char)c1;
-    //       str[3] = (char)c2;
-
-    //       Serial.print(str); Serial.print(" "); Serial.print(i); Serial.print("\n");
-    //       int p = (int)strtol(str, NULL, 16);
-    //       epd.SendData(p);
-    //     } else {
-    //       epd.SendData(0x00);
-    //     }
-    // }
-    // epd.SendCommand(0x12);
-    // delay(100);
-    // epd.WaitUntilIdle();
-
-    // delay(5000);
-    // epd.Clear();
-
-    // int ret;
-
-    // for (i=0; i<100; i++) {
-    //   ret = client.read();
-    //   Serial.print((char)ret);  
-    // }
-
-    String ret = client.responseBody();
-    Serial.println(ret);
-
-    // Serial.println(ret);
-    // Serial.println(ret2);
-    // Serial.println(client.contentLength());
-    // for (i=0; i<ret; i++) {
-    //   Serial.print((char)arr[i]);  
-    // }
-    // for (i=0; i<ret2; i++) {
-    //   //Serial.print((char)arr2[i]);  
-    // }
-    //Serial.println(arr);
-
-
-    //epd.Sleep();
     delay(10000);
 }
 
