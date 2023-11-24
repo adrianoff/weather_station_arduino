@@ -43,23 +43,25 @@ void loop() {
     }
 
     unsigned long offset = 0;
-    unsigned int limit = 1000;
+    unsigned long limit = 1000;
     char url_string[256];
     String resp;
     char base_str[] = "0x00";
 
     epd.SendCommand(0x13);
-    for(unsigned int i=0; i<96; i++) {
+    for(unsigned long i=0; i<96; i++) {
       offset = i*limit;
 
       sprintf(url_string, "/test?offset=%lu&limit=%d", offset, limit);
+      Serial.println(offset);
+      Serial.println(url_string);
       
       client.get(url_string);
       int statusCode = client.responseStatusCode();
       client.skipResponseHeaders();
 
       resp = client.responseBody();
-      Serial.print(".");
+      //Serial.println(offset);
       for (int k=0; k<limit; k=k+2) {
         base_str[2] = resp[k];
         base_str[3] = resp[k+1];
