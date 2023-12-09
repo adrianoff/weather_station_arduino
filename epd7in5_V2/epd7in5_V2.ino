@@ -54,7 +54,7 @@ void loop() {
     for(unsigned long i=0; i<96; i++) {
       offset = i*limit;
 
-      sprintf(url_string, "/test?offset=%lu&limit=%d", offset, limit);
+      sprintf(url_string, "/data?offset=%lu&limit=%d", offset, limit);
       Serial.println(offset);
       Serial.println(url_string);
       
