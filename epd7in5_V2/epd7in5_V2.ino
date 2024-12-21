@@ -14,47 +14,27 @@ HttpClient client = HttpClient(wifi, serverAddress, port);
 int status = WL_IDLE_STATUS;
 
 void setup() {
-  /*********************/
-    // Serial.begin(9600);
-    // char url_string[256];
-    // String resp;
-
-    // String sessionId;
-    // char sessionIdBuf[6] = "fsddfs";
-
-    // sessionId = "asdfasd";
-
-    // Serial.println("YTEYS");
-    // sprintf(url_string, "/pixels?offset=%lu&limit=%d&session_id=%6d", 1, 2, sessionIdBuf);
-    // Serial.println(sessionId);
-    // Serial.println(url_string);
-    // return;
-  /*********************/
-
-
-  Serial.begin(9600);
-  while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to Network named: ");
-    Serial.println(ssid);
-
-    status = WiFi.begin(ssid, pass);
-  }
-
-  Serial.println("CONNECTED");
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
 }
 
 
-void loop() {  
-    /*********/
-    delay(10000);
-    //return;
-    /*********/
+void loop() {
+    Serial.begin(9600);
+    while (status != WL_CONNECTED) {
+      Serial.print("Attempting to connect to Network named: ");
+      Serial.println(ssid);
+
+      status = WiFi.begin(ssid, pass);
+    }
+
+    Serial.println("CONNECTED");
+    Serial.print("SSID: ");
+    Serial.println(WiFi.SSID());
+
+    IPAddress ip = WiFi.localIP();
+    Serial.print("IP Address: ");
+    Serial.println(ip);
+
+
     Epd epd;
     
     Serial.println("e-Paper init...");
@@ -116,6 +96,8 @@ void loop() {
 
     epd.Sleep();
 
-    delay(10000);
+    WiFi.end();
+
+    delay(1000L * 60 * 30);
 }
 
