@@ -9,15 +9,20 @@ char pass[] = "31415926";
 char serverAddress[] = "adrianov.pro";
 int port = 3333;
 
-WiFiClient wifi;
-HttpClient client = HttpClient(wifi, serverAddress, port);
-int status = WL_IDLE_STATUS;
+// WiFiClient wifi;
+// HttpClient client = HttpClient(wifi, serverAddress, port);
+// int status = WL_IDLE_STATUS;
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 
 void loop() {
+    WiFiClient wifi;
+    HttpClient client = HttpClient(wifi, serverAddress, port);
+    int status = WL_IDLE_STATUS;
+
     Serial.begin(9600);
     while (status != WL_CONNECTED) {
       Serial.print("Attempting to connect to Network named: ");
@@ -70,6 +75,7 @@ void loop() {
 
     epd.SendCommand(0x13);
     for(unsigned long i=0; i<96; i++) {
+      digitalWrite(LED_BUILTIN, HIGH);
       offset = i*limit;
 
       sprintf(url_string, "/pixels?offset=%lu&limit=%d&session_id=", offset, limit);
@@ -89,6 +95,8 @@ void loop() {
         int p = (int)strtol(base_str, NULL, 16);
         epd.SendData(p);
       }
+
+      digitalWrite(LED_BUILTIN, LOW); 
     }
     epd.SendCommand(0x12);
     delay(100);
@@ -98,6 +106,6 @@ void loop() {
 
     WiFi.end();
 
-    delay(1000L * 60 * 30);
+    delay(1000L * 60 * 60);
 }
 
